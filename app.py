@@ -29,12 +29,27 @@ def analyze_emotion():
         text = request.json.get('text', '')
         if not text:
             return jsonify({'error': 'No text provided'}), 400
+            
+        # Check if text is too short (IBM Watson typically needs at least 10 words)
+        if len(text.split()) < 10:
+            return jsonify({
+                'error': 'Text is too short for accurate analysis. Please provide at least 10 words.',
+                'suggestion': 'Try expanding your text with more context or details.'
+            }), 400
 
         # Basic emotion analysis from Watson
-        response = natural_language_understanding.analyze(
-            text=text,
-            features=Features(emotion=EmotionOptions())
-        ).get_result()
+        try:
+            response = natural_language_understanding.analyze(
+                text=text,
+                features=Features(emotion=EmotionOptions())
+            ).get_result()
+        except Exception as e:
+            if '422' in str(e):
+                return jsonify({
+                    'error': 'Text is too short or not suitable for emotion analysis.',
+                    'suggestion': 'Try providing a longer, more detailed text.'
+                }), 422
+            raise e
         
         base_emotions = response['emotion']['document']['emotion']
         
