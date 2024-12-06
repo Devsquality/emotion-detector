@@ -1,0 +1,16 @@
+# Test Texts for Emotion Detection
+
+1. Mixed Joy and Excitement:
+I just won the lottery! I can't believe it - my hands are shaking and my heart is racing with joy! This is the most incredible moment of my life, and I'm going to celebrate all night long!
+
+2. Anxiety and Fear:
+The deadline is tomorrow and I'm nowhere near finished. Every time I think about the presentation, my heart starts racing and I feel overwhelmed. What if everything goes wrong?
+
+3. Frustration and Anger:
+This is the third time my computer has crashed today, losing all my unsaved work! I've spent hours on this project, and now I have to start over again. The customer support is completely useless!
+
+4. Contentment and Joy:
+Sitting here on my porch, watching the sunset with a warm cup of tea. The garden is blooming, and there's a gentle breeze. Everything feels just right in this moment.
+
+5. Complex Mixed Emotions:
+While I'm thrilled about getting the promotion at work, I'm also anxious about the increased responsibilities. The excitement of leading new projects is mixed with frustration about leaving my current team. It's such a complicated feeling.

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enhanced Emotion Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 30px;
+        }
+        .emotion-category {
+            margin-bottom: 30px;
+        }
+        .emotion-group {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .emotion-group h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .emotion-bar {
+            background-color: #e9ecef;
+            margin: 10px 0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .emotion-fill {
+            height: 24px;
+            border-radius: 6px;
+            text-align: right;
+            padding-right: 10px;
+            color: white;
+            line-height: 24px;
+            transition: width 0.5s ease-in-out;
+        }
+        /* Base Emotions */
+        .emotion-joy { background-color: #ffd700; }
+        .emotion-sadness { background-color: #4682b4; }
+        .emotion-fear { background-color: #800080; }
+        .emotion-disgust { background-color: #228b22; }
+        .emotion-anger { background-color: #dc143c; }
+        /* Derived Emotions */
+        .emotion-excitement { background-color: #ff69b4; }
+        .emotion-anxiety { background-color: #9932cc; }
+        .emotion-frustration { background-color: #ff4500; }
+        .emotion-contentment { background-color: #20b2aa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Enhanced Emotion Detector</h1>
+        <textarea id="text-input" placeholder="Enter text to analyze emotions..."></textarea>
+        <button onclick="analyzeEmotion()">Analyze Emotions</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function analyzeEmotion() {
+            const text = document.getElementById('text-input').value;
+            if (!text) {
+                alert('Please enter some text to analyze');
+                return;
+            }
+
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                displayResults(data);
+            })
+            .catch(error => {
+                document.getElementById('result').innerHTML = `<p style="color: red">Error: ${error.message}</p>`;
+            });
+        }
+
+        function displayResults(emotions) {
+            const resultDiv = document.getElementById('result');
+            
+            // Separate base and derived emotions
+            const baseEmotions = {
+                joy: emotions.joy,
+                sadness: emotions.sadness,
+                fear: emotions.fear,
+                disgust: emotions.disgust,
+                anger: emotions.anger
+            };
+            
+            const derivedEmotions = {
+                excitement: emotions.excitement,
+                anxiety: emotions.anxiety,
+                frustration: emotions.frustration,
+                contentment: emotions.contentment
+            };
+
+            let html = `
+                <div class="emotion-group">
+                    <h3>Base Emotions</h3>
+                    ${generateEmotionBars(baseEmotions)}
+                </div>
+                <div class="emotion-group">
+                    <h3>Derived Emotions</h3>
+                    ${generateEmotionBars(derivedEmotions)}
+                </div>
+            `;
+            
+            resultDiv.innerHTML = html;
+        }
+
+        function generateEmotionBars(emotions) {
+            return Object.entries(emotions)
+                .map(([emotion, score]) => {
+                    const percentage = (score * 100).toFixed(1);
+                    return `
+                        <div>
+                            <strong>${emotion.charAt(0).toUpperCase() + emotion.slice(1)}</strong>
+                            <div class="emotion-bar">
+                                <div class="emotion-fill emotion-${emotion}" 
+                                     style="width: ${percentage}%">
+                                    ${percentage}%
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .join('');
+        }
+    </script>
+</body>
+</html>
